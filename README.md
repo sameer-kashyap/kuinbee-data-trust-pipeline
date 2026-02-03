@@ -1,50 +1,115 @@
+# Kuinbee Data Trust Pipeline (KDTS – MVP)
 
-# Kuinbee Data Trust Pipeline (MVP)
+This repository contains a **Python-based Data Trust Pipeline** built to evaluate the **credibility, safety, and usability of datasets** before they are listed on the Kuinbee marketplace.
 
-A Python-based **data trust and validation pipeline** designed to evaluate datasets before they are listed on the Kuinbee marketplace.
-
-This project converts Kuinbee’s **manual dataset credibility framework** into a **code-backed, repeatable workflow**, focusing on data quality, consistency, trust, and usability.
-
----
-
-## 📌 Why this project exists
-
-Most data marketplaces focus on **distribution and access**.  
-Kuinbee focuses on **trust**.
-
-Before any dataset is listed, we want to answer:
-- Is the dataset technically usable?
-- Does it make logical sense?
-- Can it be trusted?
-- Is it legally safe to sell?
-- Does it actually have buyer demand?
-
-This repository is an **MVP pipeline** that automates the *technical and consistency checks* while keeping **legal and provenance checks human-reviewed**.
+The pipeline is inspired by Kuinbee’s **Dataset Credibility Checks (DCC)** framework and is designed as a **manual-to-automated MVP**, not a production system.
 
 ---
 
-## 🧠 What this pipeline does
+## 📌 Why this pipeline exists
 
-The pipeline evaluates datasets in structured stages:
+Most data marketplaces focus on **distribution and access**.
+Kuinbee focuses on **trust before access**.
 
-### 1️⃣ Parametric & Structural Checks
-- Schema integrity
-- Data type consistency
-- Completeness
-- Uniqueness
+Before selling a dataset, Kuinbee wants clear answers to questions like:
+- Is this dataset technically sound?
+- Does the data behave logically?
+- Where did this data come from?
+- Are we legally allowed to sell it?
+- Will buyers actually be able to use it?
 
-### 2️⃣ Statistical Sanity
-- Range checks
-- Impossible values
-- Distribution anomalies
-- Zero-variance columns
+This pipeline exists to **systematically answer those questions** and convert them into a **single trust score: KDTS (Kuinbee Data Trust Score)**.
 
-### 3️⃣ Consistency & Temporal Checks
-- Cross-column logic
-- Referential integrity
-- Units consistency
-- Temporal validity (or explicit NA handling)
+---
 
-### 4️⃣ Geographic Consistency (when applicable)
-- Administrative boundary validation
-- Geo checks applied only to spatial datasets
+## 🧠 Core idea: Data Due Diligence (not just data cleaning)
+
+This project treats dataset evaluation as **data due diligence**, similar to how financial or legal diligence is done — structured, explainable, and conservative.
+
+Not all checks should be automated.
+Some checks **must remain human-reviewed** by design.
+
+---
+
+## 🏗️ What this pipeline evaluates
+
+The pipeline follows the same stages described in the **Dataset Credibility Checks (DCC)** document.
+
+---
+
+### 1️⃣ Parametric & Structural Checks (Machine-First)
+
+**Question:** *Is this dataset technically sound?*
+
+Automated checks include:
+- Schema integrity (columns, data types, schema drift)
+- Statistical sanity (ranges, impossible values, distributions)
+- Completeness (missing values, critical fields)
+- Uniqueness (duplicate rows, duplicate keys)
+
+**Output:** Parametric Quality Score (0–100)
+
+---
+
+### 2️⃣ Consistency & Temporal Checks (Trust Layer)
+
+**Question:** *Does this data behave logically over time and in context?*
+
+Includes:
+- Internal consistency (cross-column logic, units, referential integrity)
+- Temporal validity (timestamps, gaps, surges — or explicit NA handling)
+- Geographic consistency (only for geo datasets)
+
+**Output:** Consistency risk flags and notes
+
+---
+
+### 3️⃣ Provenance & Methodology Checks (Human-Critical)
+
+**Question:** *Where did this data actually come from?*
+
+These checks are **documented, not blindly automated**:
+- Source declaration (primary, licensed, scraped)
+- Collection methodology and sampling logic
+- Known blind spots and bias risks
+- Transformation lineage (cleaning, aggregation, overrides)
+
+**Output:** Provenance confidence rating
+
+---
+
+### 4️⃣ Legal & Compliance Checks (Non-Negotiable Gate)
+
+**Question:** *Can Kuinbee legally sell this dataset?*
+
+This is a **hard gate**:
+- Ownership and resale rights
+- Sub-licensing permissions
+- PII and re-identification risk
+- DPDP Act and Indian IT Act alignment
+- Source website TOS compliance (for scraped data)
+
+⚠️ If legal checks fail, the dataset is **not sellable**, regardless of other scores.
+
+**Output:** Legal clearance status (Green / Amber / Red)
+
+---
+
+### 5️⃣ Market & Buyer Usability Checks (Commercial Layer)
+
+**Question:** *Will anyone actually buy and use this dataset?*
+
+Includes:
+- Buyer ICP match and industry use-cases
+- Ready-to-query vs raw data
+- Joinability with public datasets
+- Update and refresh feasibility
+
+**Output:** Commercial viability score
+
+---
+
+## 📊 KDTS – Kuinbee Data Trust Score
+
+All stages roll up into a final score:
+
